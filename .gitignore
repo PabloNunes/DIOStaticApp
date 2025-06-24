@@ -13,3 +13,13 @@ _repo.*/
 *.DS_Store
 *.lnk
 node_modules/
+
+# Test and coverage results
+TestResults/
+coverage-report/
+deployment-test/
+
+# Temporary files
+/tmp/
+*.tmp
+*.temp
