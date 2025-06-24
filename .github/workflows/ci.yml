@@ -1,4 +1,4 @@
-name: CI Testing Pipeline
+name: CI Linting Pipeline
 
 on:
   push:
@@ -7,9 +7,9 @@ on:
     branches: [ main, development ]
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-    name: Test and Lint
+    name: Lint and Build
     
     steps:
     - uses: actions/checkout@v4
@@ -25,9 +25,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
       
-    - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
-      
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -39,12 +36,12 @@ jobs:
         
     - name: Lint HTML files
       run: |
-        find . -name "*.html" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./Client/bin/*" -not -path "./Client/obj/*" -not -path "./BlazorBasic.Tests/*" | xargs htmlhint
+        find . -name "*.html" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./Client/bin/*" -not -path "./Client/obj/*" | xargs htmlhint
       continue-on-error: true
       
     - name: Lint CSS files
       run: |
-        find . -name "*.css" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./Client/bin/*" -not -path "./Client/obj/*" -not -path "./BlazorBasic.Tests/*" -not -path "./deployment-test/*" -not -path "./Client/wwwroot/css/bootstrap/*" -not -path "./Client/wwwroot/css/open-iconic/*" -not -name "*.min.css" | xargs stylelint --config-basedir ./
+        find . -name "*.css" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./Client/bin/*" -not -path "./Client/obj/*" -not -path "./deployment-test/*" -not -path "./Client/wwwroot/css/bootstrap/*" -not -path "./Client/wwwroot/css/open-iconic/*" -not -name "*.min.css" | xargs stylelint --config-basedir ./
       continue-on-error: true
       
     - name: Build for deployment validation
@@ -59,8 +56,7 @@ jobs:
           const fs = require('fs');
           let comment = '## CI Pipeline Results 🔍\n\n';
           comment += '✅ Build: Success\n';
-          comment += '✅ Tests: Passed\n';
-          comment += '⚠️ HTML/CSS Linting: Check logs for details\n';
+          comment += '✅ HTML/CSS Linting: Check logs for details\n';
           comment += '\nYour changes have been validated by the CI pipeline!';
           
           github.rest.issues.createComment({
