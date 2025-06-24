@@ -1,0 +1,129 @@
+@using BlazorBasic.Services
+@inject PollService PollService
+
+<div class="poll-container">
+    <h2>Student Theme Poll</h2>
+    <p class="text-muted">Vote for your preferred theme for upcoming sessions:</p>
+    
+    @if (!hasVoted)
+    {
+        <div class="voting-section">
+            <h4>Cast Your Vote:</h4>
+            @foreach (var option in pollOptions)
+            {
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="pollOption" id="@option.Replace(" ", "")" value="@option" @onchange="OnOptionSelected">
+                    <label class="form-check-label" for="@option.Replace(" ", "")">
+                        @option
+                    </label>
+                </div>
+            }
+            
+            <button class="btn btn-primary mt-3" @onclick="SubmitVote" disabled="@(string.IsNullOrEmpty(selectedOption))">
+                Submit Vote
+            </button>
+            
+            @if (showVoteSuccess)
+            {
+                <div class="alert alert-success mt-3" role="alert">
+                    Thank you for voting! Your vote has been recorded.
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            You have already voted. Thank you for your participation!
+        </div>
+        
+        <button class="btn btn-outline-secondary btn-sm mb-3" @onclick="ResetVote">
+            Vote Again
+        </button>
+    }
+
+    <div class="results-section mt-4">
+        <h4>Current Results:</h4>
+        @if (votes != null)
+        {
+            <div class="row">
+                @foreach (var vote in votes.OrderByDescending(v => v.Value))
+                {
+                    var percentage = totalVotes > 0 ? (vote.Value * 100.0 / totalVotes) : 0;
+                    <div class="col-12 mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-bold">@vote.Key</span>
+                            <span class="text-muted">@vote.Value votes (@percentage.ToString("F1")%)</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: @percentage%" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+            
+            <p class="text-muted mt-3">
+                <small>Total votes: @totalVotes</small>
+            </p>
+        }
+    </div>
+</div>
+
+@code {
+    private Dictionary<string, int> votes = new();
+    private bool hasVoted = false;
+    private string selectedOption = string.Empty;
+    private bool showVoteSuccess = false;
+    private int totalVotes = 0;
+
+    private readonly List<string> pollOptions = new()
+    {
+        "Agentic AI",
+        "Simple LLMs deployment",
+        "MCP Model Context protocol"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        votes = await PollService.GetVotesAsync();
+        hasVoted = await PollService.HasVotedAsync();
+        totalVotes = votes.Values.Sum();
+    }
+
+    private void OnOptionSelected(ChangeEventArgs e)
+    {
+        selectedOption = e.Value?.ToString() ?? string.Empty;
+    }
+
+    private async Task SubmitVote()
+    {
+        if (!string.IsNullOrEmpty(selectedOption))
+        {
+            await PollService.VoteAsync(selectedOption);
+            await PollService.SetVotedAsync();
+            
+            showVoteSuccess = true;
+            hasVoted = true;
+            await LoadData();
+            
+            // Hide success message after 3 seconds
+            await Task.Delay(3000);
+            showVoteSuccess = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ResetVote()
+    {
+        await PollService.ResetVoteAsync();
+        hasVoted = false;
+        selectedOption = string.Empty;
+        showVoteSuccess = false;
+        StateHasChanged();
+    }
+}

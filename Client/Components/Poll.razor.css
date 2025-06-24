@@ -1,0 +1,53 @@
+.poll-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.poll-container h2 {
+    color: #1b6ec2;
+    margin-bottom: 10px;
+}
+
+.voting-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+}
+
+.results-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.form-check {
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.form-check:hover {
+    background-color: #f8f9fa;
+}
+
+.form-check-input:checked {
+    background-color: #1b6ec2;
+    border-color: #1b6ec2;
+}
+
+.progress {
+    height: 25px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    background-color: #1b6ec2;
+    transition: width 0.6s ease;
+}
