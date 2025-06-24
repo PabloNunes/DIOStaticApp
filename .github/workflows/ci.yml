@@ -26,23 +26,7 @@ jobs:
       run: dotnet build --no-restore --configuration Release
       
     - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
-      
-    - name: Generate test coverage report
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.3.8
-      with:
-        reports: '**/coverage.cobertura.xml'
-        targetdir: 'coverage-report'
-        reporttypes: 'Html;Cobertura'
-      if: always()
-      
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        files: ./coverage-report/Cobertura.xml
-        flags: unittests
-        name: codecov-umbrella
-      if: always()
+      run: dotnet test --no-build --configuration Release --verbosity normal
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
