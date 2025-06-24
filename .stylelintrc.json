@@ -8,6 +8,7 @@
     "at-rule-no-vendor-prefix": null,
     "selector-no-vendor-prefix": null,
     "color-function-notation": null,
+    "color-function-alias-notation": null,
     "alpha-value-notation": null,
     "selector-attribute-quotes": null,
     "function-url-quotes": null,

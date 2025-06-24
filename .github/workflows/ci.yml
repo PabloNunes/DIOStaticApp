@@ -44,7 +44,7 @@ jobs:
       
     - name: Lint CSS files
       run: |
-        find . -name "*.css" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./Client/bin/*" -not -path "./Client/obj/*" -not -path "./BlazorBasic.Tests/*" -not -path "./Client/wwwroot/css/bootstrap/*" -not -path "./Client/wwwroot/css/open-iconic/*" -not -name "*.min.css" | xargs stylelint --config-basedir ./
+        find . -name "*.css" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./Client/bin/*" -not -path "./Client/obj/*" -not -path "./BlazorBasic.Tests/*" -not -path "./deployment-test/*" -not -path "./Client/wwwroot/css/bootstrap/*" -not -path "./Client/wwwroot/css/open-iconic/*" -not -name "*.min.css" | xargs stylelint --config-basedir ./
       continue-on-error: true
       
     - name: Build for deployment validation
