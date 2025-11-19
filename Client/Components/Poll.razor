@@ -19,6 +19,13 @@
                 </div>
             }
             
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="pollOption" id="NoVote" value="Não quero votar" @onchange="OnOptionSelected">
+                <label class="form-check-label" for="NoVote">
+                    Não quero votar
+                </label>
+            </div>
+            
             <button class="btn btn-primary mt-3" @onclick="SubmitVote" disabled="@(string.IsNullOrEmpty(selectedOption))">
                 Submit Vote
             </button>
@@ -104,7 +111,12 @@
     {
         if (!string.IsNullOrEmpty(selectedOption))
         {
-            await PollService.VoteAsync(selectedOption);
+            // Only count the vote if it's not the "don't want to vote" option
+            if (selectedOption != "Não quero votar")
+            {
+                await PollService.VoteAsync(selectedOption);
+            }
+            
             await PollService.SetVotedAsync();
             
             showVoteSuccess = true;
